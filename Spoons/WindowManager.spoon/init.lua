@@ -71,7 +71,7 @@ hs.hotkey.bind({"cmd"},"left",
       win:setFrame(f)
     elseif(isRight(f,max))then
       f=getNormal(max)
-      win:moveToUnit'[15,15,70,70]'
+      win:moveToUnit'[15,15,85,85]'
     else
       win:moveToUnit'[0,0,50,100]'
     end
