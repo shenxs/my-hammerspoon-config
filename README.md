@@ -11,3 +11,5 @@ an HammerSpoon config for myself
 - move window to left or right space
 
 ## something not worth metion
+
+ a link show how it works https://www.youtube.com/watch?v=W24uxM3NSRA&t=1s
