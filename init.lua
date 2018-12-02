@@ -12,7 +12,6 @@ hs.hotkey.bind({"alt"},"B",
   function()
     result= hs.execute("auth",true)
     hs.alert(result)
-
   end
 )
 

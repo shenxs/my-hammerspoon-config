@@ -1,51 +1,61 @@
 local obj={}
 obj.__index=obj
 
+local hyper={"cmd"}
+local desktop_hyper={"cmd","shift"}
+local space_hyper={"ctrl","cmd"}
+local move_space_hyper={"shift","ctrl","cmd"}
+local space_mods={"ctrl"}
 
-function showPosition(f)
+-- don't use left or right
+-- not work here and i don't konw why
+local space_left=","
+local space_right="."
+
+local function showPosition(f)
   hs.alert(f.x)
   hs.alert(f.y)
   hs.alert(f.h)
   hs.alert(f.w)
 end
 
-function isLeft(f,max)
+local function isLeft(f,max)
   return f.x==max.x and f.y==max.y and f.h==max.h and math.abs(f.w-max.w/2)<2
 end
 
-function isRight(f,max)
+local function isRight(f,max)
   return math.abs(f.x-(max.x+ max.w/2))<2 and f.y==max.y and f.h==max.h and math.abs(f.w-max.w/2)<2
 end
 
-function isLeftOrRight(f,max)
+local function isLeftOrRight(f,max)
   return isLeft(f,max) or isRight(f,max)
 end
 
-function isFull(f,max)
+local function isFull(f,max)
   return f.x==max.x and f.y==max.y and f.h==max.h and f.w==max.w
 end
 
-function isQuater(f,max)
+local function isQuater(f,max)
   return math.abs(f.w-max.w/2)<2 and math.abs(f.h-max.h/2)<2
 end
 
-function isLeftUp(f,max)
+local function isLeftUp(f,max)
   return isQuater(f,max) and f.x==max.x and f.y==max.y
 end
 
-function isLeftDown(f,max)
+local function isLeftDown(f,max)
   return isQuater(f,max) and f.x==max.x and math.abs(f.y-max.y-max.h/2)<2
 end
 
-function isRightUp(f,max)
+local function isRightUp(f,max)
   return isQuater(f,max) and math.abs(f.x-(max.x+ max.w/2))<2 and f.y==max.y
 end
 
-function isRightDown(f,max)
+local function isRightDown(f,max)
   return isQuater(f,max) and math.abs(f.x-(max.x+max.w/2))<2 and math.abs(f.y-max.y-max.h/2)<2
 end
 
-function getNormal(max)
+local function getNormal(max)
   -- showPosition(max)
   max.x=max.x+max.w*15/100
   max.y=max.h*15/100
@@ -54,118 +64,29 @@ function getNormal(max)
   return max
 end
 
+local function moveLeft()
+  local win=hs.window.focusedWindow()
+  local f=win:frame()
+  local screen=win:screen()
+  local max =screen:frame()
 
-hs.hotkey.bind({"cmd"},"left",
-  function()
-    local win=hs.window.focusedWindow()
-    local f=win:frame()
-    local screen=win:screen()
-    local max =screen:frame()
-
-    if(isRightDown(f,max) or isRightUp(f,max))then
-      f.x=max.x
-      win:setFrame(f)
-    elseif(isLeftUp(f,max) or isLeftDown(f,max))then
-      f.y=max.y
-      f.h=max.h
-      win:setFrame(f)
-    elseif(isRight(f,max))then
-      f=getNormal(max)
-      win:moveToUnit'[15,15,85,85]'
-    else
-      win:moveToUnit'[0,0,50,100]'
-    end
-
-  end
-)
-
-hs.hotkey.bind({"cmd"},"right",
-  function()
-    local win=hs.window.focusedWindow()
-    local f=win:frame()
-    local screen=win:screen()
-    local max =screen:frame()
-
-    if(isLeftDown(f,max) or isLeftUp(f,max))then
-      f.x=max.x+max.w/2
-      win:setFrame(f)
-    elseif(isRightUp(f,max) or isRightDown(f,max))then
-      f.y=max.y
-      f.h=max.h
-      win:setFrame(f)
-    elseif(isLeft(f,max))then
-      f=getNormal(max)
-      win:setFrame(f)
-    else
-      win:moveToUnit'[50,0,100,100]'
-    end
-  end
-)
-
-hs.hotkey.bind({"cmd"},"up",
-  function()
-    local win=hs.window.focusedWindow()
-    local f=win:frame()
-    local screen=win:screen()
-    local max =screen:frame()
-    if(isLeftOrRight(f,max))then
-      f.h=max.h/2
-    elseif(isLeftDown(f,max) or isRightDown(f,max))then
-      f.y=max.y
-      f.h=max.h
-    else
-      f=max
-    end
+  if(isRightDown(f,max) or isRightUp(f,max))then
+    f.x=max.x
     win:setFrame(f)
-  end
-)
-
-hs.hotkey.bind({"cmd"},"down",
-  function()
-    local win=hs.window.focusedWindow()
-    local f=win:frame()
-    local screen=win:screen()
-    local max =screen:frame()
-
-    if(isFull(f,max))then
-      f=getNormal(max)
-    elseif(isLeftOrRight(f,max))then
-      f.y=(max.y+max.h/2)
-      f.h=max.h/2
-    elseif(isLeftUp(f,max)or isRightUp(f,max))then
-      f.h=max.h
-    end
+  elseif(isLeftUp(f,max) or isLeftDown(f,max))then
+    f.y=max.y
+    f.h=max.h
     win:setFrame(f)
+  elseif(isRight(f,max))then
+    f=getNormal(max)
+    win:moveToUnit'[15,15,85,85]'
+  else
+    win:moveToUnit'[0,0,50,100]'
   end
-)
 
-hs.hotkey.bind({"shift","cmd"},"left",
-  function()
-    local win=hs.window.focusedWindow()
-    win:moveOneScreenWest()
-  end
-)
+end
 
-hs.hotkey.bind({"shift","cmd"},"right",
-  function()
-    local win=hs.window.focusedWindow()
-    win:moveOneScreenEast()
-  end
-)
-
-hs.hotkey.bind({"ctrl","cmd"},"left",
-  function()
-    hs.eventtap.keyStroke({"ctrl"},",")
-  end
-)
-
-hs.hotkey.bind({"ctrl","cmd"},"right",
-  function()
-    hs.eventtap.keyStroke({"ctrl"},".")
-  end
-)
-
-function getCurrentUserSpace()
+local function getCurrentUserSpace()
   return table.filter(
     spaces.query(),
     function(k,v)
@@ -174,11 +95,11 @@ function getCurrentUserSpace()
   )
 end
 
-function printCurrentUserSpace()
+local function printCurrentUserSpace()
   print_r(getCurrentUserSpace())
 end
 
-function getNextSpaceId()
+local function getNextSpaceId()
   local currentSpaceid=spaces.activeSpace()
   local cus=getCurrentUserSpace()
   local last=nil
@@ -192,7 +113,7 @@ function getNextSpaceId()
   error("NoCurrent Found",2)
 end
 
-function getPreviousSpaceId()
+local function getPreviousSpaceId()
   local currentSpaceid=spaces.activeSpace()
   local cus=getCurrentUserSpace()
   local flag=false
@@ -207,9 +128,7 @@ function getPreviousSpaceId()
   return nil
 end
 
-
-
-function MoveWindowToSpace(sp)
+local function MoveWindowToSpace(sp)
   local win = hs.window.focusedWindow()      -- current window
   local uuid = win:screen():spacesUUID()     -- uuid for current screen
   local spaceID = spaces.layout()[uuid][sp]  -- internal index for sp
@@ -218,7 +137,7 @@ function MoveWindowToSpace(sp)
   spaces.changeToSpace(spaceID,true)              -- follow window to new space
 end
 
-function MoveWindowOneSpace(direction)
+local function MoveWindowOneSpace(direction)
   if(direction=="left")then
     local sp=getPreviousSpaceId()
     MoveWindowToSpace(sp)
@@ -227,40 +146,37 @@ function MoveWindowOneSpace(direction)
   else
     hs.alert(direction+"Error")
   end
+end
+
+
+local function incaseApp(name)
+  local apps={'Google Chrome','网易云音乐'}
+  for k,v in pairs(apps) do
+    if v==name then
+      return true
+    end
+  end
+  return false
 
 end
 
-hs.hotkey.bind({"ctrl","cmd","shift"},"left",
-  function()
-    -- MoveWindowOneSpace("left")
-    print_r(table.filter( space.query(),function(k,v) return space.spaceType(v)==space.types.user end ))
-  end
-)
 
-hs.hotkey.bind({"ctrl","cmd"},"R",
-  function()
-    t.reset()
-    hs.alert("ok")
-  end
-)
-
-local window = require "hs.window"
-local mouse = require "hs.mouse"
-
-function moveWindowOneSpace(direction)
+local function moveWindowOneSpace(direction)
+  local window = require "hs.window"
+  local mouse = require "hs.mouse"
   local win = window.focusedWindow()
   if not win then return end
   local clickPoint = win:zoomButtonRect()
   local mouseOrigin = hs.mouse.getAbsolutePosition()
 
   if inMove==0 then mouseOrigin = mouse.getAbsolutePosition() end
-  clickPoint.x = clickPoint.x+clickPoint.w+5
-  clickPoint.y = clickPoint.y+clickPoint.h/2
-  if win:application():title() == 'Google Chrome' then
+  clickPoint.x = clickPoint.x+clickPoint.w+3
+  clickPoint.y = clickPoint.y+clickPoint.h -3
+  if incaseApp(win:application():title()) then
     local target=nil
-    if(direction==".")then
+    if(direction=="right")then
       target=getNextSpaceId()
-    elseif(direction==",") then
+    elseif(direction=="left") then
       target=getPreviousSpaceId()
     end
 
@@ -269,29 +185,112 @@ function moveWindowOneSpace(direction)
       -- spaces.changeToSpace(target,false)
     end
 
-    hs.eventtap.keyStroke({"ctrl"},direction)
+    if(direction=="left")then
+      hs.eventtap.keyStroke(space_mods,space_left)
+    elseif(direction=="right")then
+      hs.eventtap.keyStroke(space_mods,space_right)
+    end
+
     return
   end
   local mouseClickEvent = hs.eventtap.event.newMouseEvent(
     hs.eventtap.event.types.leftMouseDown, clickPoint)
   mouseClickEvent:post()
-  hs.eventtap.keyStroke({"ctrl"},direction)
+  if(direction=="left")then
+    hs.eventtap.keyStroke(space_mods,space_left)
+  elseif(direction=="right")then
+    hs.eventtap.keyStroke(space_mods,space_right)
+  end
+
   local mouseReleaseEvent = hs.eventtap.event.newMouseEvent(hs.eventtap.event.types.leftMouseUp, clickPoint):post()
   hs.mouse.setAbsolutePosition(mouseOrigin)
 end
 
-hs.hotkey.bind({"ctrl","shift","cmd"},"left",
-  function()
-    moveWindowOneSpace(",")
+local function moveRight()
+  local win=hs.window.focusedWindow()
+  local f=win:frame()
+  local screen=win:screen()
+  local max =screen:frame()
+
+  if(isLeftDown(f,max) or isLeftUp(f,max))then
+    f.x=max.x+max.w/2
+    win:setFrame(f)
+  elseif(isRightUp(f,max) or isRightDown(f,max))then
+    f.y=max.y
+    f.h=max.h
+    win:setFrame(f)
+  elseif(isLeft(f,max))then
+    f=getNormal(max)
+    win:setFrame(f)
+  else
+    win:moveToUnit'[50,0,100,100]'
   end
-)
+end
 
+local function moveDown()
+  local win=hs.window.focusedWindow()
+  local f=win:frame()
+  local screen=win:screen()
+  local max =screen:frame()
 
-hs.hotkey.bind({"ctrl","cmd","shift"},"right",
-  function()
-    moveWindowOneSpace(".")
+  if(isFull(f,max))then
+    f=getNormal(max)
+  elseif(isLeftOrRight(f,max))then
+    f.y=(max.y+max.h/2)
+    f.h=max.h/2
+  elseif(isLeftUp(f,max)or isRightUp(f,max))then
+    f.h=max.h
   end
-)
+  win:setFrame(f)
+end
 
+
+local function moveUp()
+  local win=hs.window.focusedWindow()
+  local f=win:frame()
+  local screen=win:screen()
+  local max =screen:frame()
+  if(isLeftOrRight(f,max))then
+    f.h=max.h/2
+  elseif(isLeftDown(f,max) or isRightDown(f,max))then
+    f.y=max.y
+    f.h=max.h
+  else
+    f=max
+  end
+  win:setFrame(f)
+end
+
+hs.hotkey.bind({"ctrl","cmd"},"R",function()  t.reset() end)
+hs.hotkey.bind(hyper,"left",moveLeft)
+hs.hotkey.bind(hyper,"right",moveRight)
+hs.hotkey.bind(hyper,"up",moveUp)
+hs.hotkey.bind(hyper,"down",moveDown)
+
+hs.hotkey.bind(desktop_hyper,"left",function()
+                 local win=hs.window.focusedWindow()
+                 win:moveOneScreenWest()
+end)
+
+hs.hotkey.bind(desktop_hyper,"right",function()
+                 local win=hs.window.focusedWindow()
+                 win:moveOneScreenEast()
+end)
+
+hs.hotkey.bind(space_hyper,"left",function()
+                 hs.eventtap.keyStroke(space_mods,space_left)
+               end)
+
+hs.hotkey.bind(space_hyper,"right",function()
+                 hs.eventtap.keyStroke(space_mods,space_right)
+end)
+
+hs.hotkey.bind(move_space_hyper,"left",function()
+                 moveWindowOneSpace("left")
+               end)
+
+hs.hotkey.bind(move_space_hyper,"right",function()
+                 moveWindowOneSpace("right")
+end)
 
 return obj
