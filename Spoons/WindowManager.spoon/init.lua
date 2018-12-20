@@ -183,6 +183,7 @@ local function moveWindowOneSpace(direction)
   local mouseOrigin = hs.mouse.getAbsolutePosition()
 
   if incaseApp(win:application():title()) then
+
     local target=nil
     if(direction=="right")then
       target=getNextSpaceId(currentSpaceid)
@@ -197,11 +198,15 @@ local function moveWindowOneSpace(direction)
     end
     inMove=inMove+1
     moveOneSpace()
-    hs.timer.doAfter(0.01,function()
-                       inMove=math.max(0,inMove)
+    hs.timer.doAfter(0.4,function()
+                       inMove=math.max(0,inMove-1)
                           end
     )
     return
+  end
+
+  if win:title()~="" then
+    win:focus()
   end
 
   clickPoint.x = clickPoint.x+clickPoint.w+5
@@ -219,7 +224,7 @@ local function moveWindowOneSpace(direction)
                                         if inMove==0 then
                                           hs.mouse.setAbsolutePosition(mouseOrigin)
                                         end
-                                           end
+                                          end
                      )
                       end
   )
