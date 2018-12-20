@@ -99,8 +99,8 @@ local function printCurrentUserSpace()
   print_r(getCurrentUserSpace())
 end
 
-local function getNextSpaceId()
-  local currentSpaceid=spaces.activeSpace()
+local function getNextSpaceId(curr)
+  local currentSpaceid=curr
   local cus=getCurrentUserSpace()
   local last=nil
   for k,v in pairs(cus) do
@@ -113,8 +113,8 @@ local function getNextSpaceId()
   error("NoCurrent Found",2)
 end
 
-local function getPreviousSpaceId()
-  local currentSpaceid=spaces.activeSpace()
+local function getPreviousSpaceId(curr)
+  local currentSpaceid=curr
   local cus=getCurrentUserSpace()
   local flag=false
   for k,v in pairs(cus) do
@@ -150,7 +150,7 @@ end
 
 
 local function incaseApp(name)
-  local apps={'Google Chrome','网易云音乐'}
+  local apps={'Google Chrome','网易云音乐','Dash'}
   for k,v in pairs(apps) do
     if v==name then
       return true
@@ -160,50 +160,70 @@ local function incaseApp(name)
 
 end
 
+local inMove=0
+local win=0
+local currentSpaceid=0
 
 local function moveWindowOneSpace(direction)
-  local window = require "hs.window"
-  local mouse = require "hs.mouse"
-  local win = window.focusedWindow()
-  if not win then return end
-  local clickPoint = win:zoomButtonRect()
-  local mouseOrigin = hs.mouse.getAbsolutePosition()
-
-  if inMove==0 then mouseOrigin = mouse.getAbsolutePosition() end
-  clickPoint.x = clickPoint.x+clickPoint.w+3
-  clickPoint.y = clickPoint.y+clickPoint.h -3
-  if incaseApp(win:application():title()) then
-    local target=nil
-    if(direction=="right")then
-      target=getNextSpaceId()
-    elseif(direction=="left") then
-      target=getPreviousSpaceId()
-    end
-
-    if(target~=nil) then
-      spaces.moveWindowToSpace(win:id(),target)
-      -- spaces.changeToSpace(target,false)
-    end
-
+  local function moveOneSpace()
     if(direction=="left")then
       hs.eventtap.keyStroke(space_mods,space_left)
     elseif(direction=="right")then
       hs.eventtap.keyStroke(space_mods,space_right)
     end
+  end
+  local window = require "hs.window"
+  local mouse = require "hs.mouse"
+  if inMove == 0 then
+    win = window.focusedWindow()
+    currentSpaceid=spaces.activeSpace()
+  end
+  if not win then return end
+  local clickPoint = win:zoomButtonRect()
+  local mouseOrigin = hs.mouse.getAbsolutePosition()
 
+  if incaseApp(win:application():title()) then
+    local target=nil
+    if(direction=="right")then
+      target=getNextSpaceId(currentSpaceid)
+    elseif(direction=="left") then
+      target=getPreviousSpaceId(currentSpaceid)
+    end
+
+    if(target~=nil) then
+      currentSpaceid=target
+      spaces.moveWindowToSpace(win:id(),target)
+      -- spaces.changeToSpace(target,false)
+    end
+    inMove=inMove+1
+    moveOneSpace()
+    hs.timer.doAfter(0.01,function()
+                       inMove=math.max(0,inMove)
+                          end
+    )
     return
   end
-  local mouseClickEvent = hs.eventtap.event.newMouseEvent(
-    hs.eventtap.event.types.leftMouseDown, clickPoint)
-  mouseClickEvent:post()
-  if(direction=="left")then
-    hs.eventtap.keyStroke(space_mods,space_left)
-  elseif(direction=="right")then
-    hs.eventtap.keyStroke(space_mods,space_right)
-  end
 
-  local mouseReleaseEvent = hs.eventtap.event.newMouseEvent(hs.eventtap.event.types.leftMouseUp, clickPoint):post()
-  hs.mouse.setAbsolutePosition(mouseOrigin)
+  clickPoint.x = clickPoint.x+clickPoint.w+5
+  clickPoint.y = clickPoint.y+clickPoint.h/2
+  local mouseClickEvent = hs.eventtap.event.newMouseEvent(hs.eventtap.event.types.leftMouseDown, clickPoint)
+  local mouseReleaseEvent = hs.eventtap.event.newMouseEvent(hs.eventtap.event.types.leftMouseUp, clickPoint)
+
+  mouseClickEvent:post()
+  moveOneSpace()
+  inMove=inMove+1
+  hs.timer.doAfter(.1,function()
+                     hs.timer.doAfter(.3 ,function()
+                                        mouseReleaseEvent:post()
+                                        inMove=math.max(0,inMove-1)
+                                        if inMove==0 then
+                                          hs.mouse.setAbsolutePosition(mouseOrigin)
+                                        end
+                                           end
+                     )
+                      end
+  )
+
 end
 
 local function moveRight()
@@ -279,7 +299,7 @@ end)
 
 hs.hotkey.bind(space_hyper,"left",function()
                  hs.eventtap.keyStroke(space_mods,space_left)
-               end)
+end)
 
 hs.hotkey.bind(space_hyper,"right",function()
                  hs.eventtap.keyStroke(space_mods,space_right)
@@ -287,7 +307,7 @@ end)
 
 hs.hotkey.bind(move_space_hyper,"left",function()
                  moveWindowOneSpace("left")
-               end)
+end)
 
 hs.hotkey.bind(move_space_hyper,"right",function()
                  moveWindowOneSpace("right")
