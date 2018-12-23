@@ -3,7 +3,7 @@ t=dofile("transition.lua")
 
 dofile("utility.lua")
 
--- 全局配置
+-- global setting
 hs.hotkey.showHotkeys({"alt","ctrl"},"s")
 hs.hotkey.bind({"alt", "ctrl"}, "R", function() hs.reload() end)
 hs.window.animationDuration=0

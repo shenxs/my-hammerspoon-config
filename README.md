@@ -1,5 +1,9 @@
-
 an HammerSpoon config for myself
+
+## how to use it
+- first check the config in Spoons/WindowManager.spoon/init.lua
+- set the shortcut you prefer 
+
 
 ## open app
 - use option + somekey (e.g.  option+E for finder)
