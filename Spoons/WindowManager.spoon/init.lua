@@ -297,6 +297,17 @@ hs.hotkey.bind(desktop_hyper,"left",function()
                  win:moveOneScreenWest()
 end)
 
+hs.hotkey.bind(desktop_hyper,"up",function()
+                 local win=hs.window.focusedWindow()
+                 win:moveOneScreenNorth()
+end)
+
+hs.hotkey.bind(desktop_hyper,"down",function()
+                 local win=hs.window.focusedWindow()
+                 win:moveOneScreenSouth()
+end)
+
+
 hs.hotkey.bind(desktop_hyper,"right",function()
                  local win=hs.window.focusedWindow()
                  win:moveOneScreenEast()
