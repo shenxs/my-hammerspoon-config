@@ -63,7 +63,7 @@ hs.hotkey.bind({"alt"}, ".", open("iTerm"))
 hs.hotkey.bind({"alt"}, "I", open("IntelliJ IDEA"))
 hs.hotkey.bind({"alt"}, "M", open("NeteaseMusic"))
 hs.hotkey.bind({"alt"}, "E", function()
-    hs.execute("eg &",true)
+    os.execute("/usr/local/bin/emacsclient -c &")
                              end
 )
 
