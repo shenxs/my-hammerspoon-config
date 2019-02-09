@@ -56,12 +56,15 @@ function open(name)
   end
 end
 
-hs.hotkey.bind({"alt"}, "E", open("Finder"))
+hs.hotkey.bind({"alt"}, "F", open("Finder"))
 hs.hotkey.bind({"alt"}, "W", open("WeChat"))
 hs.hotkey.bind({"alt"}, "G", open("Google Chrome"))
 hs.hotkey.bind({"alt"}, ".", open("iTerm"))
 hs.hotkey.bind({"alt"}, "I", open("IntelliJ IDEA"))
 hs.hotkey.bind({"alt"}, "M", open("NeteaseMusic"))
-
+hs.hotkey.bind({"alt"}, "E", function()
+    hs.execute("eg &",true)
+                             end
+)
 
 return obj
