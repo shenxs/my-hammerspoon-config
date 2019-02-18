@@ -1,10 +1,7 @@
 local application = require 'hs.application'
 
-
-
 local obj={}
 obj.__index=obj
-
 
 -- Toggle an application between being the frontmost app, and being hidden
 function toggle_application(_app)

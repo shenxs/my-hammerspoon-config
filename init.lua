@@ -15,12 +15,6 @@ hs.hotkey.bind({"alt"},"B",
   end
 )
 
-hs.hotkey.bind({"alt"},"N",function()
-	hs.eventtap.keyStroke({},"abcdefg")
-end
-)
-
-
 hs.loadSpoon("Wifi")
 hs.loadSpoon("QuickOpen")
 hs.loadSpoon("AutoReload")
