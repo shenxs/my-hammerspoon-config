@@ -59,9 +59,12 @@ hs.hotkey.bind({"alt"}, "G", open("Google Chrome"))
 hs.hotkey.bind({"alt"}, ".", open("iTerm"))
 hs.hotkey.bind({"alt"}, "I", open("IntelliJ IDEA"))
 hs.hotkey.bind({"alt"}, "M", open("NeteaseMusic"))
-hs.hotkey.bind({"alt"}, "E", function()
+hs.hotkey.bind({"alt"}, "E",
+  function()
     os.execute("/usr/local/bin/emacsclient -c &")
-                             end
+    hs.application.launchOrFocus("Emacs")
+  end
 )
+
 
 return obj
