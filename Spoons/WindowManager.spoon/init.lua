@@ -150,14 +150,14 @@ end
 
 
 local function incaseApp(name)
-  local apps={'Google Chrome','网易云音乐','Dash'}
-  for k,v in pairs(apps) do
-    if v==name then
-      return true
-    end
-  end
-  return false
-
+  local apps={'Google Chrome','网易云音乐','Dash','iTerm2'}
+  return true
+  -- for k,v in pairs(apps) do
+  --   if v==name then
+  --     return true
+  --   end
+  -- end
+  -- return false
 end
 
 local inMove=0

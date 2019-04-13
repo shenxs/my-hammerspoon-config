@@ -61,8 +61,8 @@ hs.hotkey.bind({"alt"}, "I", open("IntelliJ IDEA"))
 hs.hotkey.bind({"alt"}, "M", open("NeteaseMusic"))
 hs.hotkey.bind({"alt"}, "E",
   function()
-    os.execute("/usr/local/bin/emacsclient -c &")
-    hs.application.launchOrFocus("Emacs")
+	os.execute("/usr/local/bin/emacsclient -c &")
+	hs.application.launchOrFocus("Emacs")
   end
 )
 
