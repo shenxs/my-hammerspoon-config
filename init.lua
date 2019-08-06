@@ -5,15 +5,15 @@ dofile("utility.lua")
 
 -- global setting
 hs.hotkey.showHotkeys({"alt","ctrl"},"s")
-hs.hotkey.bind({"alt", "ctrl"}, "R", function() hs.reload() end)
+hs.hotkey.bind({"alt", "ctrl", "cmd"}, "R", function() hs.reload() end)
 hs.window.animationDuration=0
 
-hs.hotkey.bind({"alt"},"B",
-  function()
-    result= hs.execute("auth",true)
-    hs.alert(result)
-  end
-)
+-- hs.hotkey.bind({"alt"},"B",
+  -- function()
+    -- result= hs.execute("auth",true)
+    -- hs.alert(result)
+  -- end
+-- )
 
 hs.loadSpoon("Wifi")
 hs.loadSpoon("QuickOpen")
