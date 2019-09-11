@@ -200,7 +200,7 @@ local function moveWindowOneSpace(direction)
     moveOneSpace()
     hs.timer.doAfter(0.4,function()
                        inMove=math.max(0,inMove-1)
-                          end
+                         end
     )
     return
   end
@@ -274,7 +274,7 @@ local function moveUp()
   local win=hs.window.focusedWindow()
   local f=win:frame()
   local screen=win:screen()
-  local max =screen:frame()
+  local max =screen:fullFrame()
   if(isLeftOrRight(f,max))then
     f.h=max.h/2
   elseif(isLeftDown(f,max) or isRightDown(f,max))then
