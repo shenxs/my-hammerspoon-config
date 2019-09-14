@@ -59,6 +59,8 @@ hs.hotkey.bind({"alt"}, "G", open("Google Chrome"))
 hs.hotkey.bind({"alt"}, ".", open("iTerm"))
 hs.hotkey.bind({"alt"}, "I", open("IntelliJ IDEA"))
 hs.hotkey.bind({"alt"}, "M", open("NeteaseMusic"))
+hs.hotkey.bind({"alt"}, "D", open("DingTalk"))
+hs.hotkey.bind({"alt"}, "2", open("Microsoft To Do"))
 hs.hotkey.bind({"alt"}, "E",
   function()
     os.execute("/usr/local/bin/emacsclient -c &")

@@ -12,6 +12,8 @@ local space_mods={"ctrl"}
 local space_left=","
 local space_right="."
 
+local menubar = require("hs.menubar")
+
 local function showPosition(f)
   hs.alert(f.x)
   hs.alert(f.y)
@@ -55,6 +57,24 @@ local function isRightDown(f,max)
   return isQuater(f,max) and math.abs(f.x-(max.x+max.w/2))<2 and math.abs(f.y-max.y-max.h/2)<2
 end
 
+local function hideDock()
+  hs.osascript.applescript("\
+    tell application \"System Events\"\
+    set the autohide of the dock preferences to true\
+    end tell\
+    ")
+end
+
+local function unHideDock()
+  hs.osascript.applescript("\
+    tell application \"System Events\"\
+    set the autohide of the dock preferences to false\
+    end tell\
+    ")
+end
+
+
+
 local function getNormal(max)
   -- showPosition(max)
   max.x=max.x+max.w*15/100
@@ -62,28 +82,6 @@ local function getNormal(max)
   max.w=max.w*70/100
   max.h=max.h*70/100
   return max
-end
-
-local function moveLeft()
-  local win=hs.window.focusedWindow()
-  local f=win:frame()
-  local screen=win:screen()
-  local max =screen:frame()
-
-  if(isRightDown(f,max) or isRightUp(f,max))then
-    f.x=max.x
-    win:setFrame(f)
-  elseif(isLeftUp(f,max) or isLeftDown(f,max))then
-    f.y=max.y
-    f.h=max.h
-    win:setFrame(f)
-  elseif(isRight(f,max))then
-    f=getNormal(max)
-    win:moveToUnit'[15,15,85,85]'
-  else
-    win:moveToUnit'[0,0,50,100]'
-  end
-
 end
 
 local function getCurrentUserSpace()
@@ -231,19 +229,43 @@ local function moveWindowOneSpace(direction)
 
 end
 
+local function moveLeft()
+  local win=hs.window.focusedWindow()
+  local f=win:frame()
+  local screen=win:screen()
+  local max =screen:fullFrame()
+
+  hs.alert.show(max)
+  if(isRightDown(f,max) or isRightUp(f,max))then
+    f.x=max.x
+    win:setFrame(f)
+  elseif(isLeftUp(f,max) or isLeftDown(f,max))then
+    f.y=max.y
+    f.h=max.h
+    win:setFrame(f)
+  elseif(isRight(f,max))then
+    f=getNormal(max)
+    win:moveToUnit'[15,15,85,85]'
+  else
+    win:moveToUnit'[0,0,50,100]'
+  end
+
+end
+
 local function moveRight()
   local win=hs.window.focusedWindow()
   local f=win:frame()
   local screen=win:screen()
-  local max =screen:frame()
+  local max =screen:fullFrame()
 
   if(isLeftDown(f,max) or isLeftUp(f,max))then
     f.x=max.x+max.w/2
     win:setFrame(f)
   elseif(isRightUp(f,max) or isRightDown(f,max))then
-    f.y=max.y
-    f.h=max.h
-    win:setFrame(f)
+    -- f.y=max.y
+    -- f.h=max.h
+    -- win:setFrame(f)
+    win:moveToUnit'[0,0,100,100]'
   elseif(isLeft(f,max))then
     f=getNormal(max)
     win:setFrame(f)
@@ -256,8 +278,10 @@ local function moveDown()
   local win=hs.window.focusedWindow()
   local f=win:frame()
   local screen=win:screen()
-  local max =screen:frame()
-
+  local sf = screen:frame()
+  local max =screen:fullFrame()
+  max.y=sf.y
+  max.h=max.h-sf.y
   if(isFull(f,max))then
     f=getNormal(max)
   elseif(isLeftOrRight(f,max))then
@@ -274,16 +298,25 @@ local function moveUp()
   local win=hs.window.focusedWindow()
   local f=win:frame()
   local screen=win:screen()
+  local sf = screen:frame()
   local max =screen:fullFrame()
+  max.y=sf.y
+  max.h=max.h-sf.y
+  hs.alert.show(f)
+  hs.alert.show(sf)
+  hs.alert.show(max)
+
+  -- hs.alert.show(menubar:frame())
   if(isLeftOrRight(f,max))then
     f.h=max.h/2
   elseif(isLeftDown(f,max) or isRightDown(f,max))then
     f.y=max.y
     f.h=max.h
   else
-    f=max
+    -- f=max
+    win:moveToUnit'[0,0,100,100]'
   end
-  win:setFrame(f)
+  -- win:setFrame(f)
 end
 
 hs.hotkey.bind({"ctrl","cmd"},"R",function()  t.reset() end)
