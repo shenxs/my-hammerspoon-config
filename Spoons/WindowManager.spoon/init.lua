@@ -74,7 +74,6 @@ local function unHideDock()
 end
 
 
-
 local function getNormal(max)
   -- showPosition(max)
   max.x=max.x+max.w*15/100
@@ -235,7 +234,7 @@ local function moveLeft()
   local screen=win:screen()
   local max =screen:fullFrame()
 
-  hs.alert.show(max)
+  hideDock()
   if(isRightDown(f,max) or isRightUp(f,max))then
     f.x=max.x
     win:setFrame(f)
@@ -247,7 +246,12 @@ local function moveLeft()
     f=getNormal(max)
     win:moveToUnit'[15,15,85,85]'
   else
-    win:moveToUnit'[0,0,50,100]'
+    f.x=0
+    f.y=0
+    f.w=max.w/2
+    f.h=max.h
+    win:setFrame(f)
+    -- win:moveToUnit'[0,0,50,100]'
   end
 
 end
@@ -258,6 +262,7 @@ local function moveRight()
   local screen=win:screen()
   local max =screen:fullFrame()
 
+  unHideDock()
   if(isLeftDown(f,max) or isLeftUp(f,max))then
     f.x=max.x+max.w/2
     win:setFrame(f)
@@ -270,7 +275,11 @@ local function moveRight()
     f=getNormal(max)
     win:setFrame(f)
   else
-    win:moveToUnit'[50,0,100,100]'
+    f.x=max.w/2
+    f.y=0
+    f.w=max.w/2
+    f.h=max.h
+    win:setFrame(f)
   end
 end
 
@@ -300,23 +309,17 @@ local function moveUp()
   local screen=win:screen()
   local sf = screen:frame()
   local max =screen:fullFrame()
-  max.y=sf.y
-  max.h=max.h-sf.y
-  hs.alert.show(f)
-  hs.alert.show(sf)
-  hs.alert.show(max)
 
-  -- hs.alert.show(menubar:frame())
   if(isLeftOrRight(f,max))then
     f.h=max.h/2
   elseif(isLeftDown(f,max) or isRightDown(f,max))then
     f.y=max.y
     f.h=max.h
   else
-    -- f=max
-    win:moveToUnit'[0,0,100,100]'
+    hideDock()
+    f=max
   end
-  -- win:setFrame(f)
+  win:setFrame(f)
 end
 
 hs.hotkey.bind({"ctrl","cmd"},"R",function()  t.reset() end)
