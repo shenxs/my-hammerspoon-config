@@ -29,9 +29,10 @@ local function isLeft(f,max)
 end
 
 local function isRight(f,max)
-  local re = near(f.x,(max.x+ max.w/2)) and near(f.y,max.y) and near(f.h,max.h) and near(f.w,max.w/2)
-  -- log.i(re)
-  return re
+   log.i(f,max)
+   local re=near(f.x,(max.x+ max.w/2)) and near(f.y,max.y) and near(f.h,max.h) and near(f.w,max.w/2)
+   log.i(re)
+   return re
 end
 
 local function isLeftOrRight(f,max)
@@ -81,7 +82,11 @@ end
 
 local function getNormal(id,max)
   if prevFrameSizes[id] then
-    return prevFrameSizes[id]
+    local re=prevFrameSizes[id]
+    re.x=max.x+ max.w/2-re.w/2
+    re.y=max.y+ max.h/2-re.h/2
+    return re
+
   else
     hs.alert.show("default")
     max.x=max.x+max.w*15/100
@@ -247,19 +252,26 @@ local function moveLeft()
   max.y=sf.y
   max.h=max.h-sf.y
 
-  hideDock()
   if(isRightDown(f,max) or isRightUp(f,max))then
     f.x=max.x
   elseif(isLeftUp(f,max) or isLeftDown(f,max))then
     f.y=max.y
     f.h=max.h
   elseif(isRight(f,max))then
+    unHideDock()
     f=getNormal(win:id(), max)
+  elseif(isLeft(f,max)) then
+    return
+  elseif(isFull(f,max)) then
+    f.x=max.x
+    f.y=max.y
+    f.w=max.w/2
+    f.h=max.h
   else
-    log.i("store")
+    hideDock()
     prevFrameSizes[win:id()] = hs.geometry.copy(f)
-    f.x=0
-    f.y=0
+    f.x=max.x
+    f.y=max.y
     f.w=max.w/2
     f.h=max.h
   end
@@ -279,18 +291,24 @@ local function moveRight()
   if(isLeftDown(f,max) or isLeftUp(f,max))then
     f.x=max.x+max.w/2
   elseif(isRightUp(f,max) or isRightDown(f,max))then
-    -- f.y=max.y
-    -- f.h=max.h
-    -- win:setFrame(f)
-    -- win:moveToUnit'[0,0,100,100]'
+    f.y=max.y
+    f.h=max.h
   elseif(isRight(f,max)) then
+    log.i("right")
     return
+  elseif(isFull(f,max))then
+    f.x=max.x+max.w/2
+    f.y=max.y
+    f.w=max.w/2
+    f.h=max.h
   elseif(isLeft(f,max))then
     f=getNormal(win:id(),max)
   else
+    log.i("store")
+    log.i(f)
     prevFrameSizes[win:id()] = hs.geometry.copy(f)
-    f.x=max.w/2
-    f.y=0
+    f.x=max.x+max.w/2
+    f.y=max.y
     f.w=max.w/2
     f.h=max.h
   end
@@ -340,7 +358,6 @@ local function moveUp()
     return
   else
     hideDock()
-    log.i("store")
     prevFrameSizes[win:id()] = hs.geometry.copy(f)
     f=max
   end
@@ -354,24 +371,29 @@ hs.hotkey.bind(hyper,"up",moveUp)
 hs.hotkey.bind(hyper,"down",moveDown)
 
 hs.hotkey.bind(desktop_hyper,"left",function()
+                 hideDock()
                  local win=hs.window.focusedWindow()
                  win:moveOneScreenWest()
 end)
 
 hs.hotkey.bind(desktop_hyper,"up",function()
+                 hideDock()
                  local win=hs.window.focusedWindow()
-                 win:moveOneScreenNorth()
+                 win:moveOneScreenNorth(true)
 end)
 
 hs.hotkey.bind(desktop_hyper,"down",function()
+                 hideDock()
                  local win=hs.window.focusedWindow()
-                 win:moveOneScreenSouth()
+                 win:moveOneScreenSouth(true)
 end)
 
 
 hs.hotkey.bind(desktop_hyper,"right",function()
+                 hideDock()
                  local win=hs.window.focusedWindow()
                  win:moveOneScreenEast()
+                 -- unHideDock()
 end)
 
 hs.hotkey.bind(space_hyper,"left",function()
