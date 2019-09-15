@@ -88,7 +88,6 @@ local function getNormal(id,max)
     return re
 
   else
-    hs.alert.show("default")
     max.x=max.x+max.w*15/100
     max.y=max.h*15/100
     max.w=max.w*70/100
