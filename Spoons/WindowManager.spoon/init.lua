@@ -1,6 +1,8 @@
 local obj={}
 obj.__index=obj
 
+local log = hs.logger.new('WindowsManager','debug')
+
 local hyper={"cmd"}
 local desktop_hyper={"cmd","shift"}
 local space_hyper={"ctrl","cmd"}
@@ -12,21 +14,24 @@ local space_mods={"ctrl"}
 local space_left=","
 local space_right="."
 
-local menubar = require("hs.menubar")
 
-local function showPosition(f)
-  hs.alert(f.x)
-  hs.alert(f.y)
-  hs.alert(f.h)
-  hs.alert(f.w)
+-- store frame size with windows Id
+local prevFrameSizes = {}
+
+local function near(a ,b)
+  local tolerence=20
+  return math.abs(a-b)<tolerence
 end
 
 local function isLeft(f,max)
-  return f.x==max.x and f.y==max.y and f.h==max.h and math.abs(f.w-max.w/2)<2
+  local re = near(f.x,max.x) and near(f.y,max.y) and  near( f.h,max.h) and near(f.w,max.w/2)
+  return re
 end
 
 local function isRight(f,max)
-  return math.abs(f.x-(max.x+ max.w/2))<2 and f.y==max.y and f.h==max.h and math.abs(f.w-max.w/2)<2
+  local re = near(f.x,(max.x+ max.w/2)) and near(f.y,max.y) and near(f.h,max.h) and near(f.w,max.w/2)
+  -- log.i(re)
+  return re
 end
 
 local function isLeftOrRight(f,max)
@@ -34,27 +39,27 @@ local function isLeftOrRight(f,max)
 end
 
 local function isFull(f,max)
-  return f.x==max.x and f.y==max.y and f.h==max.h and f.w==max.w
+  return  near(f.x,max.x) and  near(f.y,max.y) and near(f.h,max.h) and near(f.w,max.w)
 end
 
 local function isQuater(f,max)
-  return math.abs(f.w-max.w/2)<2 and math.abs(f.h-max.h/2)<2
+  return near(f.w,max.w/2) and near(f.h,max.h/2)
 end
 
 local function isLeftUp(f,max)
-  return isQuater(f,max) and f.x==max.x and f.y==max.y
+  return isQuater(f,max) and near(f.x,max.x) and near(f.y,max.y)
 end
 
 local function isLeftDown(f,max)
-  return isQuater(f,max) and f.x==max.x and math.abs(f.y-max.y-max.h/2)<2
+  return isQuater(f,max) and near(f.x,max.x) and near(f.y-max.y,max.h/2)
 end
 
 local function isRightUp(f,max)
-  return isQuater(f,max) and math.abs(f.x-(max.x+ max.w/2))<2 and f.y==max.y
+  return isQuater(f,max) and near(f.x,(max.x+ max.w/2)) and near(f.y,max.y)
 end
 
 local function isRightDown(f,max)
-  return isQuater(f,max) and math.abs(f.x-(max.x+max.w/2))<2 and math.abs(f.y-max.y-max.h/2)<2
+  return isQuater(f,max) and near(f.x,(max.x+max.w/2)) and near(f.y-max.y,max.h/2)
 end
 
 local function hideDock()
@@ -74,13 +79,18 @@ local function unHideDock()
 end
 
 
-local function getNormal(max)
-  -- showPosition(max)
-  max.x=max.x+max.w*15/100
-  max.y=max.h*15/100
-  max.w=max.w*70/100
-  max.h=max.h*70/100
-  return max
+local function getNormal(id,max)
+  if prevFrameSizes[id] then
+    return prevFrameSizes[id]
+  else
+    hs.alert.show("default")
+    max.x=max.x+max.w*15/100
+    max.y=max.h*15/100
+    max.w=max.w*70/100
+    max.h=max.h*70/100
+    prevFrameSizes[id]=max
+    return max
+  end
 end
 
 local function getCurrentUserSpace()
@@ -147,7 +157,7 @@ end
 
 
 local function incaseApp(name)
-  local apps={'Google Chrome','网易云音乐','Dash','iTerm2'}
+  -- local apps={'Google Chrome','网易云音乐','Dash','iTerm2'}
   return true
   -- for k,v in pairs(apps) do
   --   if v==name then
@@ -233,27 +243,27 @@ local function moveLeft()
   local f=win:frame()
   local screen=win:screen()
   local max =screen:fullFrame()
+  local sf = screen:frame()
+  max.y=sf.y
+  max.h=max.h-sf.y
 
   hideDock()
   if(isRightDown(f,max) or isRightUp(f,max))then
     f.x=max.x
-    win:setFrame(f)
   elseif(isLeftUp(f,max) or isLeftDown(f,max))then
     f.y=max.y
     f.h=max.h
-    win:setFrame(f)
   elseif(isRight(f,max))then
-    f=getNormal(max)
-    win:moveToUnit'[15,15,85,85]'
+    f=getNormal(win:id(), max)
   else
+    log.i("store")
+    prevFrameSizes[win:id()] = hs.geometry.copy(f)
     f.x=0
     f.y=0
     f.w=max.w/2
     f.h=max.h
-    win:setFrame(f)
-    -- win:moveToUnit'[0,0,50,100]'
   end
-
+  win:setFrame(f)
 end
 
 local function moveRight()
@@ -261,26 +271,30 @@ local function moveRight()
   local f=win:frame()
   local screen=win:screen()
   local max =screen:fullFrame()
+  local sf = screen:frame()
+  max.y=sf.y
+  max.h=max.h-sf.y
 
   unHideDock()
   if(isLeftDown(f,max) or isLeftUp(f,max))then
     f.x=max.x+max.w/2
-    win:setFrame(f)
   elseif(isRightUp(f,max) or isRightDown(f,max))then
     -- f.y=max.y
     -- f.h=max.h
     -- win:setFrame(f)
-    win:moveToUnit'[0,0,100,100]'
+    -- win:moveToUnit'[0,0,100,100]'
+  elseif(isRight(f,max)) then
+    return
   elseif(isLeft(f,max))then
-    f=getNormal(max)
-    win:setFrame(f)
+    f=getNormal(win:id(),max)
   else
+    prevFrameSizes[win:id()] = hs.geometry.copy(f)
     f.x=max.w/2
     f.y=0
     f.w=max.w/2
     f.h=max.h
-    win:setFrame(f)
   end
+  win:setFrame(f)
 end
 
 local function moveDown()
@@ -291,8 +305,10 @@ local function moveDown()
   local max =screen:fullFrame()
   max.y=sf.y
   max.h=max.h-sf.y
+
   if(isFull(f,max))then
-    f=getNormal(max)
+    f=getNormal(win:id(),max)
+    unHideDock()
   elseif(isLeftOrRight(f,max))then
     f.y=(max.y+max.h/2)
     f.h=max.h/2
@@ -309,14 +325,23 @@ local function moveUp()
   local screen=win:screen()
   local sf = screen:frame()
   local max =screen:fullFrame()
+  max.y=sf.y
+  max.h=max.h-sf.y
 
   if(isLeftOrRight(f,max))then
     f.h=max.h/2
   elseif(isLeftDown(f,max) or isRightDown(f,max))then
     f.y=max.y
     f.h=max.h
+  elseif(isLeftUp(f,max) or isRightUp(f,max)) then
+    hideDock()
+    f=max
+  elseif(isFull(f,max)) then
+    return
   else
     hideDock()
+    log.i("store")
+    prevFrameSizes[win:id()] = hs.geometry.copy(f)
     f=max
   end
   win:setFrame(f)

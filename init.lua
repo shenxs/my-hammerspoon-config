@@ -6,7 +6,7 @@ dofile("utility.lua")
 -- global setting
 hs.hotkey.showHotkeys({"alt","ctrl"},"s")
 hs.hotkey.bind({"alt", "ctrl", "cmd"}, "R", function() hs.reload() end)
-hs.window.animationDuration=0.1
+hs.window.animationDuration=0
 
 -- hs.hotkey.bind({"alt"},"B",
   -- function()
