@@ -29,9 +29,7 @@ local function isLeft(f,max)
 end
 
 local function isRight(f,max)
-   log.i(f,max)
    local re=near(f.x,(max.x+ max.w/2)) and near(f.y,max.y) and near(f.h,max.h) and near(f.w,max.w/2)
-   log.i(re)
    return re
 end
 
@@ -293,7 +291,6 @@ local function moveRight()
     f.y=max.y
     f.h=max.h
   elseif(isRight(f,max)) then
-    log.i("right")
     return
   elseif(isFull(f,max))then
     f.x=max.x+max.w/2
@@ -303,8 +300,6 @@ local function moveRight()
   elseif(isLeft(f,max))then
     f=getNormal(win:id(),max)
   else
-    log.i("store")
-    log.i(f)
     prevFrameSizes[win:id()] = hs.geometry.copy(f)
     f.x=max.x+max.w/2
     f.y=max.y
