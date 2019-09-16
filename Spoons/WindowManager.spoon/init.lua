@@ -258,6 +258,7 @@ local function moveLeft()
     unHideDock()
     f=getNormal(win:id(), max)
   elseif(isLeft(f,max)) then
+    hideDock()
     return
   elseif(isFull(f,max)) then
     f.x=max.x
@@ -349,6 +350,7 @@ local function moveUp()
     hideDock()
     f=max
   elseif(isFull(f,max)) then
+    hideDock()
     return
   else
     hideDock()
