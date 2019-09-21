@@ -64,7 +64,9 @@ hs.hotkey.bind({"alt"}, "2", open("Microsoft To Do"))
 hs.hotkey.bind({"alt"}, "E",
   function()
     os.execute("/usr/local/bin/emacsclient -c &")
-    hs.application.launchOrFocus("Emacs")
+    hs.timer.doAfter(0.1, function ()
+                       hs.application.launchOrFocus("Emacs")
+    end)
   end
 )
 
