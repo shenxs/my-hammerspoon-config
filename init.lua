@@ -19,5 +19,6 @@ hs.loadSpoon("Wifi")
 hs.loadSpoon("QuickOpen")
 hs.loadSpoon("AutoReload")
 hs.loadSpoon("WindowManager")
+hs.loadSpoon("Clipboard")
 -- hs.loadSpoon("SpeedMenu")
 
