@@ -96,8 +96,11 @@ local function getNormal(id,max)
 end
 
 local function getCurrentUserSpace()
+  local win = hs.window.focusedWindow()      -- current window
+  local uuid = win:screen():spacesUUID()     -- uuid for current screen
+
   return table.filter(
-    spaces.query(),
+    spaces.layout()[uuid],
     function(k,v)
       return spaces.spaceType(v)==spaces.types.user
     end
@@ -111,20 +114,6 @@ end
 local function getNextSpaceId(curr)
   local currentSpaceid=curr
   local cus=getCurrentUserSpace()
-  local last=nil
-  for k,v in pairs(cus) do
-    if(v==currentSpaceid)then
-      return last
-    else
-      last=v
-    end
-  end
-  error("NoCurrent Found",2)
-end
-
-local function getPreviousSpaceId(curr)
-  local currentSpaceid=curr
-  local cus=getCurrentUserSpace()
   local flag=false
   for k,v in pairs(cus) do
     if(flag)then
@@ -132,6 +121,21 @@ local function getPreviousSpaceId(curr)
     end
     if(v==currentSpaceid)then
       flag=true
+    end
+  end
+  -- error("NoCurrent Found",2)
+  return nil
+end
+
+local function getPreviousSpaceId(curr)
+  local currentSpaceid=curr
+  local cus=getCurrentUserSpace()
+  local last=nil
+  for k,v in pairs(cus) do
+    if(v==currentSpaceid)then
+      return last
+    else
+      last=v
     end
   end
   return nil
