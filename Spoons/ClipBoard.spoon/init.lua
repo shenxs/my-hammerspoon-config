@@ -140,7 +140,7 @@ watcher = hs.timer.new(0.5, function()
 end)
 watcher:start()
 
-hs.hotkey.bind({ "cmd", "alt" }, "c",
+hs.hotkey.bind({ "cmd", "ctrl" }, "c",
   function ()
     if chooser:isVisible() then
       chooser:hide()
