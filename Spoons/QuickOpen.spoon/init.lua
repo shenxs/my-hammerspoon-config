@@ -72,12 +72,12 @@ hs.hotkey.bind({"alt"}, "E",
   end
 )
 
-hs.hotkey.bind({"cmd"},"l",
-  function()
-    -- hs.caffeinate.lockScreen()
-    -- lock screen
-    hs.eventtap.keyStroke({"cmd","ctrl"},"q")
-  end
-)
+-- hs.hotkey.bind({"cmd"},"l",
+  -- function()
+    -- -- hs.caffeinate.lockScreen()
+    -- -- lock screen
+    -- hs.eventtap.keyStroke({"cmd","ctrl"},"q")
+  -- end
+-- )
 
 return obj
