@@ -24,7 +24,10 @@ local function near(a ,b)
 end
 
 local function isLeft(f,max)
+   log.i("frame=",f)
+   log.i("max=",max)
    local re = near(f.x,max.x) and near(f.y,max.y) and  near( f.h,max.h) and near(f.w,max.w/2)
+   log.i("re= ",re)
    return re
 end
 
@@ -62,19 +65,23 @@ local function isRightDown(f,max)
 end
 
 local function hideDock()
-   hs.osascript.applescript("\
+   if false then
+      hs.osascript.applescript("\
     tell application \"System Events\"\
     set the autohide of the dock preferences to true\
     end tell\
     ")
+   end
 end
 
 local function unHideDock()
-   hs.osascript.applescript("\
+   if false then
+      hs.osascript.applescript("\
     tell application \"System Events\"\
     set the autohide of the dock preferences to false\
     end tell\
     ")
+   end
 end
 
 
@@ -166,17 +173,6 @@ local function MoveWindowOneSpace(direction)
 end
 
 
-local function incaseApp(name)
-   -- local apps={'Google Chrome','网易云音乐','Dash','iTerm2'}
-   return true
-   -- for k,v in pairs(apps) do
-   --   if v==name then
-   --     return true
-   --   end
-   -- end
-   -- return false
-end
-
 local inMove=0
 local win=0
 local currentSpaceid=0
@@ -210,7 +206,6 @@ local function moveWindowOneSpace(direction)
    if(target~=nil) then
       currentSpaceid=target
       spaces.moveWindowToSpace(win:id(),target)
-      -- spaces.changeToSpace(target,false)
    end
    inMove=inMove+1
    moveOneSpace()
@@ -226,10 +221,7 @@ local function moveLeft()
    local win=hs.window.focusedWindow()
    local f=win:frame()
    local screen=win:screen()
-   local max =screen:fullFrame()
-   local sf = screen:frame()
-   max.y=sf.y
-   max.h=max.h-sf.y
+   local max = screen:frame()
 
    if(isRightDown(f,max) or isRightUp(f,max))then
       f.x=max.x
@@ -243,17 +235,13 @@ local function moveLeft()
       hideDock()
       return
    elseif(isFull(f,max)) then
-      f.x=max.x
-      f.y=max.y
-      f.w=max.w/2
-      f.h=max.h
+      win:moveToUnit'[0,0,50,100]'
+      return
    else
       hideDock()
       prevFrameSizes[win:id()] = hs.geometry.copy(f)
-      f.x=max.x
-      f.y=max.y
-      f.w=max.w/2
-      f.h=max.h
+      win:moveToUnit'[0,0,50,100]'
+      return
    end
    win:setFrame(f)
 end
@@ -262,12 +250,8 @@ local function moveRight()
    local win=hs.window.focusedWindow()
    local f=win:frame()
    local screen=win:screen()
-   local max =screen:fullFrame()
-   local sf = screen:frame()
-   max.y=sf.y
-   max.h=max.h-sf.y
+   local max = screen:frame()
 
-   unHideDock()
    if(isLeftDown(f,max) or isLeftUp(f,max))then
       f.x=max.x+max.w/2
    elseif(isRightUp(f,max) or isRightDown(f,max))then
@@ -276,18 +260,14 @@ local function moveRight()
    elseif(isRight(f,max)) then
       return
    elseif(isFull(f,max))then
-      f.x=max.x+max.w/2
-      f.y=max.y
-      f.w=max.w/2
-      f.h=max.h
+      win:moveToUnit'[50,0,100,100]'
+      return
    elseif(isLeft(f,max))then
       f=getNormal(win:id(),max)
    else
       prevFrameSizes[win:id()] = hs.geometry.copy(f)
-      f.x=max.x+max.w/2
-      f.y=max.y
-      f.w=max.w/2
-      f.h=max.h
+      win:moveToUnit'[50,0,100,100]'
+      return
    end
    win:setFrame(f)
 end
@@ -296,10 +276,7 @@ local function moveDown()
    local win=hs.window.focusedWindow()
    local f=win:frame()
    local screen=win:screen()
-   local sf = screen:frame()
-   local max =screen:fullFrame()
-   max.y=sf.y
-   max.h=max.h-sf.y
+   local max = screen:frame()
 
    if(isFull(f,max))then
       f=getNormal(win:id(),max)
@@ -313,15 +290,11 @@ local function moveDown()
    win:setFrame(f)
 end
 
-
 local function moveUp()
    local win=hs.window.focusedWindow()
    local f=win:frame()
    local screen=win:screen()
-   local sf = screen:frame()
-   local max =screen:fullFrame()
-   max.y=sf.y
-   max.h=max.h-sf.y
+   local max = screen:frame()
 
    if(isLeftOrRight(f,max))then
       f.h=max.h/2
@@ -330,14 +303,16 @@ local function moveUp()
       f.h=max.h
    elseif(isLeftUp(f,max) or isRightUp(f,max)) then
       hideDock()
-      f=max
+      win:moveToUnit'[0,0,100,100]'
+      return
    elseif(isFull(f,max)) then
       hideDock()
       return
    else
       hideDock()
       prevFrameSizes[win:id()] = hs.geometry.copy(f)
-      f=max
+      win:moveToUnit'[0,0,100,100]'
+      return
    end
    win:setFrame(f)
 end
@@ -371,7 +346,6 @@ hs.hotkey.bind(desktop_hyper,"right",function()
 		  hideDock()
 		  local win=hs.window.focusedWindow()
 		  win:moveOneScreenEast()
-		  -- unHideDock()
 end)
 
 hs.hotkey.bind(space_hyper,"left",function()
