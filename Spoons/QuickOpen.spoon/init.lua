@@ -63,13 +63,13 @@ hs.hotkey.bind({"alt"}, "I", open("IntelliJ IDEA"))
 hs.hotkey.bind({"alt"}, "M", open("NeteaseMusic"))
 hs.hotkey.bind({"alt"}, "D", open("DingTalk"))
 hs.hotkey.bind({"alt"}, "2", open("Microsoft To Do"))
-hs.hotkey.bind({"alt"}, "E",
-  function()
-    os.execute("/usr/local/bin/emacsclient -c &")
-    hs.timer.doAfter(0.1, function ()
-                       hs.application.launchOrFocus("Emacs")
-    end)
-  end
+hs.hotkey.bind({"alt"}, "E", open("EmacsClient")
+  -- function()
+  --   os.execute("/usr/local/bin/emacsclient -c &")
+  --   hs.timer.doAfter(0.1, function ()
+  --                      hs.application.launchOrFocus("Emacs")
+  --   end)
+  -- end
 )
 
 -- hs.hotkey.bind({"cmd"},"l",
