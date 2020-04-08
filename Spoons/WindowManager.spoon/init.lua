@@ -3,11 +3,11 @@ obj.__index=obj
 
 local log = hs.logger.new('WindowsManager','debug')
 local spaces = require('hs._asm.undocumented.spaces')
-local hyper={"alt","cmd"}
-local desktop_hyper={"cmd","shift"}
-local space_hyper={"ctrl","cmd"}
-local move_space_hyper={"shift","ctrl","cmd"}
+local hyper={"alt"}
+local desktop_hyper={"shift"}
+local move_space_hyper={"shift","ctrl"}
 local space_mods={"ctrl"}
+local space_hyper={"ctrl","cmd"}
 
 -- don't use left or right
 -- not work here and i don't konw why
@@ -347,6 +347,7 @@ hs.hotkey.bind(desktop_hyper,"right",function()
 		  local win=hs.window.focusedWindow()
 		  win:moveOneScreenEast()
 end)
+
 
 hs.hotkey.bind(space_hyper,"left",function()
 		  hs.eventtap.keyStroke(space_mods,space_left)
