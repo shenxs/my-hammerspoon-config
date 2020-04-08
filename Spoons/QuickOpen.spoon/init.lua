@@ -62,7 +62,7 @@ hs.hotkey.bind({"alt"}, ".", open("iTerm"))
 hs.hotkey.bind({"alt"}, "I", open("IntelliJ IDEA"))
 hs.hotkey.bind({"alt"}, "M", open("NeteaseMusic"))
 hs.hotkey.bind({"alt"}, "D", open("DingTalk"))
-hs.hotkey.bind({"alt"}, "T", open("Microsoft To-Do"))
+hs.hotkey.bind({"alt"}, "T", open("Microsoft To Do"))
 hs.hotkey.bind({"alt"}, "E", open("EmacsClient")
 )
 
