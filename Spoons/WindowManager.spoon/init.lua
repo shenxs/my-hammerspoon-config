@@ -24,10 +24,10 @@ local function near(a ,b)
 end
 
 local function isLeft(f,max)
-   log.i("frame=",f)
-   log.i("max=",max)
+   -- log.i("frame=",f)
+   -- log.i("max=",max)
    local re = near(f.x,max.x) and near(f.y,max.y) and  near( f.h,max.h) and near(f.w,max.w/2)
-   log.i("re= ",re)
+   -- log.i("re= ",re)
    return re
 end
 
@@ -108,7 +108,7 @@ local function getCurrentUserSpace()
 
    local spacesLayout = spaces.layout()
    print_r(spacesLayout)
-   log.i(uuid)
+   -- log.i(uuid)
    print_r(spaces.layout())
    return table.filter(
       spaces.layout()[uuid],
