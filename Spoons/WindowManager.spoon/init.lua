@@ -3,7 +3,7 @@ obj.__index=obj
 
 local log = hs.logger.new('WindowsManager','debug')
 local spaces = require('hs._asm.undocumented.spaces')
-local hyper={"cmd"}
+local hyper={"alt","cmd"}
 local desktop_hyper={"cmd","shift"}
 local space_hyper={"ctrl","cmd"}
 local move_space_hyper={"shift","ctrl","cmd"}
