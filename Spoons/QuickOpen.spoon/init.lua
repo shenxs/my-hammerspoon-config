@@ -75,4 +75,10 @@ hs.hotkey.bind({"alt"},"l",
   end
 )
 
+hs.hotkey.bind({"alt"},"Y",function()
+      os.execute("open \"dingtalk://dingtalkclient/action/sendmsg?dingtalk_id=id1a4mb\"")
+			   end
+)
+
+
 return obj
