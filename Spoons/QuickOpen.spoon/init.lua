@@ -55,7 +55,7 @@ end
 
 hs.application.enableSpotlightForNameSearches(true)
 
-hs.hotkey.bind({"alt"}, "F", open("Finder"))
+-- hs.hotkey.bind({"alt"}, "F", open("Finder"))
 hs.hotkey.bind({"alt"}, "W", open("WeChat"))
 hs.hotkey.bind({"alt"}, "G", open("Google Chrome"))
 hs.hotkey.bind({"alt"}, ".", open("iTerm"))
