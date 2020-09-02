@@ -19,6 +19,6 @@ hs.window.animationDuration=0
 hs.loadSpoon("QuickOpen")
 hs.loadSpoon("AutoReload")
 hs.loadSpoon("WindowManager")
-hs.loadSpoon("Clipboard")
+-- hs.loadSpoon("Clipboard")
 hs.loadSpoon("private")
 
