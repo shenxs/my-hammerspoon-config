@@ -179,17 +179,17 @@ local currentSpaceid=0
 
 local function moveWindowOneSpace(direction)
    local function moveOneSpace()
-      if(direction=="left")then
-	 hs.eventtap.keyStroke(space_mods,space_left)
-      elseif(direction=="right")then
-	 hs.eventtap.keyStroke(space_mods,space_right)
-      end
+	  if(direction=="left")then
+		 hs.eventtap.keyStroke(space_mods,space_left)
+	  elseif(direction=="right")then
+		 hs.eventtap.keyStroke(space_mods,space_right)
+	  end
    end
    local window = require "hs.window"
    local mouse = require "hs.mouse"
    if inMove == 0 then
-      win = window.focusedWindow()
-      currentSpaceid=spaces.activeSpace()
+	  win = window.focusedWindow()
+	  currentSpaceid=spaces.activeSpace()
    end
    if not win then return end
    local clickPoint = win:zoomButtonRect()
@@ -198,20 +198,20 @@ local function moveWindowOneSpace(direction)
 
    local target=nil
    if(direction=="right")then
-      target=getNextSpaceId(currentSpaceid)
+	  target=getNextSpaceId(currentSpaceid)
    elseif(direction=="left") then
-      target=getPreviousSpaceId(currentSpaceid)
+	  target=getPreviousSpaceId(currentSpaceid)
    end
 
    if(target~=nil) then
-      currentSpaceid=target
-      spaces.moveWindowToSpace(win:id(),target)
+	  currentSpaceid=target
+	  spaces.moveWindowToSpace(win:id(),target)
    end
    inMove=inMove+1
    moveOneSpace()
    hs.timer.doAfter(0.4,function()
-		       inMove=math.max(0,inMove-1)
-			end
+					   inMove=math.max(0,inMove-1)
+   end
    )
    return
 
@@ -224,24 +224,24 @@ local function moveLeft()
    local max = screen:frame()
 
    if(isRightDown(f,max) or isRightUp(f,max))then
-      f.x=max.x
+	  f.x=max.x
    elseif(isLeftUp(f,max) or isLeftDown(f,max))then
-      f.y=max.y
-      f.h=max.h
+	  f.y=max.y
+	  f.h=max.h
    elseif(isRight(f,max))then
-      unHideDock()
-      f=getNormal(win:id(), max)
+	  unHideDock()
+	  f=getNormal(win:id(), max)
    elseif(isLeft(f,max)) then
-      hideDock()
-      return
+	  hideDock()
+	  return
    elseif(isFull(f,max)) then
-      win:moveToUnit'[0,0,50,100]'
-      return
+	  win:moveToUnit'[0,0,50,100]'
+	  return
    else
-      hideDock()
-      prevFrameSizes[win:id()] = hs.geometry.copy(f)
-      win:moveToUnit'[0,0,50,100]'
-      return
+	  hideDock()
+	  prevFrameSizes[win:id()] = hs.geometry.copy(f)
+	  win:moveToUnit'[0,0,50,100]'
+	  return
    end
    win:setFrame(f)
 end
@@ -253,21 +253,21 @@ local function moveRight()
    local max = screen:frame()
 
    if(isLeftDown(f,max) or isLeftUp(f,max))then
-      f.x=max.x+max.w/2
+	  f.x=max.x+max.w/2
    elseif(isRightUp(f,max) or isRightDown(f,max))then
-      f.y=max.y
-      f.h=max.h
+	  f.y=max.y
+	  f.h=max.h
    elseif(isRight(f,max)) then
-      return
+	  return
    elseif(isFull(f,max))then
-      win:moveToUnit'[50,0,100,100]'
-      return
+	  win:moveToUnit'[50,0,100,100]'
+	  return
    elseif(isLeft(f,max))then
-      f=getNormal(win:id(),max)
+	  f=getNormal(win:id(),max)
    else
-      prevFrameSizes[win:id()] = hs.geometry.copy(f)
-      win:moveToUnit'[50,0,100,100]'
-      return
+	  prevFrameSizes[win:id()] = hs.geometry.copy(f)
+	  win:moveToUnit'[50,0,100,100]'
+	  return
    end
    win:setFrame(f)
 end
@@ -279,13 +279,13 @@ local function moveDown()
    local max = screen:frame()
 
    if(isFull(f,max))then
-      f=getNormal(win:id(),max)
-      unHideDock()
+	  f=getNormal(win:id(),max)
+	  unHideDock()
    elseif(isLeftOrRight(f,max))then
-      f.y=(max.y+max.h/2)
-      f.h=max.h/2
+	  f.y=(max.y+max.h/2)
+	  f.h=max.h/2
    elseif(isLeftUp(f,max)or isRightUp(f,max))then
-      f.h=max.h
+	  f.h=max.h
    end
    win:setFrame(f)
 end
@@ -297,22 +297,22 @@ local function moveUp()
    local max = screen:frame()
 
    if(isLeftOrRight(f,max))then
-      f.h=max.h/2
+	  f.h=max.h/2
    elseif(isLeftDown(f,max) or isRightDown(f,max))then
-      f.y=max.y
-      f.h=max.h
+	  f.y=max.y
+	  f.h=max.h
    elseif(isLeftUp(f,max) or isRightUp(f,max)) then
-      hideDock()
-      win:moveToUnit'[0,0,100,100]'
-      return
+	  hideDock()
+	  win:moveToUnit'[0,0,100,100]'
+	  return
    elseif(isFull(f,max)) then
-      hideDock()
-      return
+	  hideDock()
+	  return
    else
-      hideDock()
-      prevFrameSizes[win:id()] = hs.geometry.copy(f)
-      win:moveToUnit'[0,0,100,100]'
-      return
+	  hideDock()
+	  prevFrameSizes[win:id()] = hs.geometry.copy(f)
+	  win:moveToUnit'[0,0,100,100]'
+	  return
    end
    win:setFrame(f)
 end
@@ -323,46 +323,62 @@ hs.hotkey.bind(hyper,"right",moveRight)
 hs.hotkey.bind(hyper,"up",moveUp)
 hs.hotkey.bind(hyper,"down",moveDown)
 
-hs.hotkey.bind(desktop_hyper,"left",function()
-		  -- hideDock()
-		  local win=hs.window.focusedWindow()
-		  win:moveOneScreenWest()
-end)
+hs.hotkey.bind(desktop_hyper,"left",
+			   function()
+				  -- hideDock()
+				  local win=hs.window.focusedWindow()
+				  win:moveOneScreenWest()
+			   end
+)
 
-hs.hotkey.bind(desktop_hyper,"up",function()
-		  -- hideDock()
-		  local win=hs.window.focusedWindow()
-		  win:moveOneScreenNorth()
-end)
+hs.hotkey.bind(desktop_hyper,"up",
+			   function()
+				  -- hideDock()
+				  local win=hs.window.focusedWindow()
+				  win:moveOneScreenNorth()
+			   end
+)
 
-hs.hotkey.bind(desktop_hyper,"down",function()
-		  -- hideDock()
-		  local win=hs.window.focusedWindow()
-		  win:moveOneScreenSouth(true)
-end)
-
-
-hs.hotkey.bind(desktop_hyper,"right",function()
-		  -- hideDock()
-		  local win=hs.window.focusedWindow()
-		  win:moveOneScreenEast()
-end)
+hs.hotkey.bind(desktop_hyper,"down",
+			   function()
+				  -- hideDock()
+				  local win=hs.window.focusedWindow()
+				  win:moveOneScreenSouth()
+			   end
+)
 
 
-hs.hotkey.bind(space_hyper,"left",function()
-		  hs.eventtap.keyStroke(space_mods,space_left)
-end)
+hs.hotkey.bind(desktop_hyper,"right",
+			   function()
+				  -- hideDock()
+				  local win=hs.window.focusedWindow()
+				  win:moveOneScreenEast()
+			   end
+)
 
-hs.hotkey.bind(space_hyper,"right",function()
-		  hs.eventtap.keyStroke(space_mods,space_right)
-end)
 
-hs.hotkey.bind(move_space_hyper,"left",function()
-		  moveWindowOneSpace("left")
-end)
+hs.hotkey.bind(space_hyper,"left",
+			   function()
+				  hs.eventtap.keyStroke(space_mods,space_left)
+			   end
+)
 
-hs.hotkey.bind(move_space_hyper,"right",function()
-		  moveWindowOneSpace("right")
-end)
+hs.hotkey.bind(space_hyper,"right",
+			   function()
+				  hs.eventtap.keyStroke(space_mods,space_right)
+			   end
+)
+
+hs.hotkey.bind(move_space_hyper,"left",
+			   function()
+				  moveWindowOneSpace("left")
+			   end
+)
+
+hs.hotkey.bind(move_space_hyper,"right",
+			   function()
+				  moveWindowOneSpace("right")
+			   end
+)
 
 return obj
